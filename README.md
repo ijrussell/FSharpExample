@@ -21,7 +21,7 @@ In the terminal, navigate to the project in the src folder and type:
 
 In the terminal, you will get an output of ```Ok ()```
 
-If you change some of the data to be invalid, say the FirstName to " " and the Email to "" and run again you will get an outpu of ```Error (FailedCreateValidation [EmptyFirstName " "; InvalidEmail ""])```
+If you change some of the data to be invalid, say the FirstName to " " and the Email to "" and run again you will get an output of ```Error (FailedCreateValidation [EmptyFirstName " "; InvalidEmail ""])```
 
 ## Free F# ebook
 
