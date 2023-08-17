@@ -3,6 +3,7 @@
 This is the (partially complete) code from converting an interview coding test from C# into F#. It makes use of the awesome FsToolkit.ErrorHandling package (https://github.com/demystifyfp/FsToolkit.ErrorHandling).
 
 This codebase contains a number of F# features including:
+
 - Computation Expressions
 - Higher-Order Functions
 - Validation
@@ -12,4 +13,12 @@ This codebase contains a number of F# features including:
 - Records and Tuples
 - Modules
 
-## This is only example code showing a number of F# features
+## Running the code
+
+In the terminal, navigate to the project in the src folder and type:
+
+```dotnet run```
+
+In the terminal, you will get an output of ```Ok ()```
+
+If you change some of the data to be invalid, say the FirstName to " " and the Email to "" and run again you will get an outpu of ```Error (FailedCreateValidation [EmptyFirstName " "; InvalidEmail ""])```
