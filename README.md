@@ -13,6 +13,10 @@ This codebase contains a number of F# features and techniques including:
 - Records and Tuples
 - Modules
 
+## Setting up
+
+This code was written using VS Code, the ionide F# extension, and .Net SDK 7.0.10.
+
 ## Running the code
 
 In the terminal, navigate to the project in the src folder and type:
@@ -22,6 +26,14 @@ In the terminal, navigate to the project in the src folder and type:
 In the terminal, you will get an output of ```Ok ()```
 
 If you change some of the data to be invalid, say the FirstName to " " and the Email to "" and run again you will get an output of ```Error (FailedCreateValidation [EmptyFirstName " "; InvalidEmail ""])```
+
+## Running the tests
+
+Open a new terminal, navigate to the project in the tests folder and type:
+
+```dotnet test```
+
+In the terminal, you will get an output showing the result of running the tests.
 
 ## Free F# ebook
 
