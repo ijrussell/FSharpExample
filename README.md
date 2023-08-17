@@ -4,6 +4,7 @@ This is the (partially complete) code from converting an interview coding test f
 
 This codebase contains a number of F# features including:
 - Computation Expressions
+- Higher-Order Functions
 - Validation
 - Discriminated Unions
 - Single-case Discriminated Unions
