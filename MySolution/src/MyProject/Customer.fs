@@ -1,7 +1,24 @@
 namespace App
 
 open System
+open System.Text.RegularExpressions
 open FsToolkit.ErrorHandling
+
+[<AutoOpen>]
+module SharedFunctions =
+    let (|ParseRegex|_|) regex str =
+        let m = Regex(regex).Match(str)
+        if m.Success then Some (List.tail [ for x in m.Groups -> x.Value ])
+        else None
+
+    let (|IsNullOrWhiteSpace|_|) input =
+        if String.IsNullOrWhiteSpace input then Some ()
+        else None
+
+    let (|IsValidEmail|_|) input =
+        match input with
+        | ParseRegex ".*?@(.*)" [ _ ] -> Some input
+        | _ -> None
 
 type CustomerValidationErrors =
     | EmptyFirstName of string
@@ -34,8 +51,10 @@ type Email = private Email of string
 [<RequireQualifiedAccess>]
 module Email =
     let create (input:string) =
-        if input.Contains("@") && input.Contains(".") then Ok (Email input)
-        else Error (InvalidEmail input)
+        match input with
+        | IsNullOrWhiteSpace -> Error (InvalidEmail input)
+        | IsValidEmail _ -> Ok (Email input)
+        | _ -> Error (InvalidEmail input)
 
     let value (input:Email) = input |> fun (Email email) -> email
 
