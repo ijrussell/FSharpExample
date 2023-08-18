@@ -19,9 +19,9 @@ module AddCustomerTests =
     let companyRepository id =
         Some { Id = id; Name = $"Some Imaginary Company"; Classification = Gold }
 
-    let customerRepository (input:Customer * CustomerCredit) = ()
+    let customerRepository (input:Customer * Company * CompanyCredit) = ()
 
-    let creditService (customer:Customer) = 1000
+    let creditService (company:Company) = 1000
 
     let services = {
         NowProvider = nowProvider 
@@ -91,7 +91,7 @@ module AddCustomerTests =
             
             let silverCompanyRepository (id:int) = 
                 Some { Id = companyId; Name = $"Some Imaginary Company"; Classification = Silver }
-            let noCreditService (customer:Customer) = 0
+            let noCreditService (company:Company) = 0
             let services' = { services with GetCompanyById = silverCompanyRepository; CreditService = noCreditService }
 
             let actual =

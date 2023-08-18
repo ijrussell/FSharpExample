@@ -3,31 +3,70 @@ namespace App
 open System
 open FsToolkit.ErrorHandling
 
-type Classification = Gold | Silver | Bronze
+type CustomerValidationErrors =
+    | EmptyFirstName of string
+    | EmptySurname of string
+    | InvalidEmail of string
+    | CustomerTooYoung of DateOnly
 
-type Company = {
-    Id: int
-    Name: string
-    Classification: Classification
-}
+type FirstName = private FirstName of string
+
+[<RequireQualifiedAccess>]
+module FirstName =
+    let create (input:string) =
+        if String.IsNullOrWhiteSpace(input) |> not then Ok (FirstName input)
+        else Error (EmptyFirstName input)
+
+    let value (input:FirstName) = input |> fun (FirstName firstName) -> firstName
+
+type Surname = private Surname of string
+
+[<RequireQualifiedAccess>]
+module Surname =
+    let create (input:string) =
+        if String.IsNullOrWhiteSpace(input) |> not then Ok (Surname input)
+        else Error (EmptySurname input)
+
+    let value (input:Surname) = input |> fun (Surname surname) -> surname
+
+type Email = private Email of string
+
+[<RequireQualifiedAccess>]
+module Email =
+    let create (input:string) =
+        if input.Contains("@") && input.Contains(".") then Ok (Email input)
+        else Error (InvalidEmail input)
+
+    let value (input:Email) = input |> fun (Email email) -> email
+
+type DateOfBirth = private DateOfBirth of DateOnly
+
+[<RequireQualifiedAccess>]
+module DateOfBirth =
+    let private getAge (now:DateOnly) (dateOfBirth:DateOnly) =
+        let age = now.Year - dateOfBirth.Year
+        if now.Month < dateOfBirth.Month || now.Month = dateOfBirth.Month && now.Day < dateOfBirth.Day then age - 1
+        else age
+    
+    let create (nowProvider:unit -> DateTime) (dateOfBirth:DateOnly) =
+        let today = nowProvider () |> DateOnly.FromDateTime
+        if getAge today dateOfBirth >= 21 then Ok (DateOfBirth dateOfBirth)
+        else Error (CustomerTooYoung dateOfBirth)
+
+    let value (input:DateOfBirth) = input |> fun (DateOfBirth dateOfBirth) -> dateOfBirth
 
 type Customer = {
     FirstName: FirstName
     Surname: Surname
     Email: Email
     DateOfBirth: DateOfBirth
-    Company: Company option
 }
-
-type CustomerCredit =
-    | HasCreditLimit of int
-    | DoesNotHaveCreditLimit
 
 type AddCustomerServices = {
     NowProvider: unit -> DateTime
     GetCompanyById: int -> Company option
-    CreateCustomer: Customer * CustomerCredit -> unit
-    CreditService: Customer -> int
+    CreateCustomer: Customer * Company * CompanyCredit -> unit
+    CreditService: Company -> int
 }
 
 type AddCustomerErrors =
@@ -43,8 +82,7 @@ module Customer =
             Surname = surname
             Email = email
             DateOfBirth = dateOfBirth
-            Company = None 
-        }
+       }
 
     let tryCreate (nowProvider:unit -> DateTime) firstName surname email dateOfBirth =
         validation {
@@ -56,40 +94,6 @@ module Customer =
         }     
 
 [<RequireQualifiedAccess>]
-module Company =
-    let requiresCreditCheck (company:Company) =
-        match company.Classification with
-        | Gold -> false
-        | _ -> true
-
-    let calculateCreditLimit (company:Company) (limit:int) =
-        match company.Classification with
-        | Gold -> DoesNotHaveCreditLimit
-        | Silver -> 2 * limit |> HasCreditLimit
-        | Bronze -> limit |> HasCreditLimit
-
-[<RequireQualifiedAccess>]
-module CustomerCredit =
-    let get (creditService:Customer -> int) (customer:Customer) =
-        customer.Company
-        |> Option.map (fun company ->
-            if company |> Company.requiresCreditCheck then
-                customer
-                |> creditService 
-                |> Company.calculateCreditLimit company
-            else DoesNotHaveCreditLimit)
-
-    let hasSufficientCredit (creditLimit:CustomerCredit) =
-        match creditLimit with
-        | HasCreditLimit limit -> limit >= 500
-        | DoesNotHaveCreditLimit -> true
-
-    let bind (f:int -> CustomerCredit) (limit:CustomerCredit) =
-        match limit with
-        | HasCreditLimit value -> f value 
-        | DoesNotHaveCreditLimit -> DoesNotHaveCreditLimit
-
-[<RequireQualifiedAccess>]
 module CustomerService =
     let addCustomer (services:AddCustomerServices) firstName surname email dateOfBirth companyId =
         result {
@@ -99,14 +103,11 @@ module CustomerService =
             let! company = 
                 services.GetCompanyById companyId 
                 |> Result.requireSome (CompanyNotFound companyId)
-            let customerWithCompany = { customer with Company = Some company }
-            let! credit = 
-                CustomerCredit.get services.CreditService customerWithCompany 
-                |> Result.requireSome CompanyNotSupplied
+            let credit = CompanyCredit.getCredit services.CreditService company 
             let creditLimit = 
                 credit
-                |> CustomerCredit.bind (Company.calculateCreditLimit company)
-            return services.CreateCustomer (customerWithCompany, creditLimit)
+                |> CompanyCredit.bind (CompanyCredit.calculateCreditLimit company)
+            return services.CreateCustomer (customer, company, creditLimit)
         }
 
 

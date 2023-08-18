@@ -6,7 +6,7 @@ let nowProvider = fun () -> DateTime.Now
 let companyRepository id =
     Some { Id = id; Name = $"Some Imaginary Company"; Classification = Gold }
 
-let customerRepository (input:Customer * CustomerCredit) = ()
+let customerRepository (input:Customer * Company * CompanyCredit) = ()
 
 let creditService customer = 1000
 
