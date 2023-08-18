@@ -22,16 +22,5 @@ module CompanyCredit =
         if company |> requiresCreditCheck then
             company
             |> creditCheckService
-            |> fun limit -> HasCreditLimit limit 
+            |> fun limit -> calculateCreditLimit company limit 
         else DoesNotHaveCreditLimit
-
-    let hasSufficientCredit (creditLimit:CompanyCredit) =
-        match creditLimit with
-        | HasCreditLimit limit -> limit >= 500
-        | DoesNotHaveCreditLimit -> true
-
-    let bind (f:int -> CompanyCredit) (limit:CompanyCredit) =
-        match limit with
-        | HasCreditLimit value -> f value 
-        | DoesNotHaveCreditLimit -> DoesNotHaveCreditLimit
-

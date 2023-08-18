@@ -103,10 +103,9 @@ module CustomerService =
             let! company = 
                 services.GetCompanyById companyId 
                 |> Result.requireSome (CompanyNotFound companyId)
-            let credit = CompanyCredit.getCreditLimit services.CreditCheckService company 
             let creditLimit = 
-                credit
-                |> CompanyCredit.bind (CompanyCredit.calculateCreditLimit company)
+                company
+                |> CompanyCredit.getCreditLimit services.CreditCheckService  
             return services.CreateCustomer (customer, company, creditLimit)
         }
 
