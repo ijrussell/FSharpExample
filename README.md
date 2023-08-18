@@ -13,6 +13,10 @@ This codebase contains a number of F# features and techniques including:
 - Records and Tuples
 - Modules
 
+## Free F# ebook
+
+To learn more about these features and a lot more, you can download my free 200-page ebook from <https://leanpub.com/essential-fsharp>
+
 ## Setting up
 
 This code was written using VS Code, the ionide F# extension, and .Net SDK 7.0.10.
@@ -34,7 +38,3 @@ Open a new terminal, navigate to the project in the tests folder and type:
 ```dotnet test```
 
 In the terminal, you will get an output showing the result of running the tests.
-
-## Free F# ebook
-
-You can download my free 200-page ebook from <https://leanpub.com/essential-fsharp>
