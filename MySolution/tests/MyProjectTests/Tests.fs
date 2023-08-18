@@ -27,7 +27,7 @@ module AddCustomerTests =
         NowProvider = nowProvider 
         GetCompanyById = companyRepository
         CreateCustomer = customerRepository
-        CreditService = creditService
+        CreditCheckService = creditService
     }
 
     let rand =
@@ -92,7 +92,7 @@ module AddCustomerTests =
             let silverCompanyRepository (id:int) = 
                 Some { Id = companyId; Name = $"Some Imaginary Company"; Classification = Silver }
             let noCreditService (company:Company) = 0
-            let services' = { services with GetCompanyById = silverCompanyRepository; CreditService = noCreditService }
+            let services' = { services with GetCompanyById = silverCompanyRepository; CreditCheckService = noCreditService }
 
             let actual =
                 CustomerService.addCustomer services' validFirstName validSurname validEmail validDateOfBirth companyId

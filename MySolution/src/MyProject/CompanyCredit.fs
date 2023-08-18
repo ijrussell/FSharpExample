@@ -18,10 +18,10 @@ module CompanyCredit =
         | Silver -> 2 * limit |> HasCreditLimit
         | Bronze -> limit |> HasCreditLimit
 
-    let getCredit (creditService:Company -> int) (company:Company) =
+    let getCreditLimit (creditCheckService:Company -> int) (company:Company) =
         if company |> requiresCreditCheck then
             company
-            |> creditService
+            |> creditCheckService
             |> fun limit -> HasCreditLimit limit 
         else DoesNotHaveCreditLimit
 

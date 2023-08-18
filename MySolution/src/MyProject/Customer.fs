@@ -66,7 +66,7 @@ type AddCustomerServices = {
     NowProvider: unit -> DateTime
     GetCompanyById: int -> Company option
     CreateCustomer: Customer * Company * CompanyCredit -> unit
-    CreditService: Company -> int
+    CreditCheckService: Company -> int
 }
 
 type AddCustomerErrors =
@@ -103,7 +103,7 @@ module CustomerService =
             let! company = 
                 services.GetCompanyById companyId 
                 |> Result.requireSome (CompanyNotFound companyId)
-            let credit = CompanyCredit.getCredit services.CreditService company 
+            let credit = CompanyCredit.getCreditLimit services.CreditCheckService company 
             let creditLimit = 
                 credit
                 |> CompanyCredit.bind (CompanyCredit.calculateCreditLimit company)

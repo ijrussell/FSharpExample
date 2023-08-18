@@ -14,7 +14,7 @@ let services = {
     NowProvider = nowProvider 
     GetCompanyById = companyRepository
     CreateCustomer = customerRepository
-    CreditService = creditService
+    CreditCheckService = creditService
 }
 
 let firstName = "Geraldine"
