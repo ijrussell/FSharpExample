@@ -22,5 +22,5 @@ module CompanyCredit =
         if company |> requiresCreditCheck then
             company
             |> creditCheckService
-            |> fun limit -> calculateCreditLimit company limit 
+            |> calculateCreditLimit company 
         else DoesNotHaveCreditLimit
