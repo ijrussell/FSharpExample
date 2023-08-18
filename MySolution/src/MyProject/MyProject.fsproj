@@ -4,8 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Functions.fs" />
-    <Compile Include="Types.fs" />
+    <Compile Include="CustomerTypes.fs" />
     <Compile Include="Customer.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

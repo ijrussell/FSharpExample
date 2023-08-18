@@ -42,9 +42,14 @@ type DateOfBirth = private DateOfBirth of DateOnly
 
 [<RequireQualifiedAccess>]
 module DateOfBirth =
+    let private getAge (now:DateOnly) (dateOfBirth:DateOnly) =
+        let age = now.Year - dateOfBirth.Year
+        if now.Month < dateOfBirth.Month || now.Month = dateOfBirth.Month && now.Day < dateOfBirth.Day then age - 1
+        else age
+    
     let create (nowProvider:unit -> DateTime) (dateOfBirth:DateOnly) =
         let today = nowProvider () |> DateOnly.FromDateTime
-        if DateOnly.getAge today dateOfBirth >= 21 then Ok (DateOfBirth dateOfBirth)
+        if getAge today dateOfBirth >= 21 then Ok (DateOfBirth dateOfBirth)
         else Error (CustomerTooYoung dateOfBirth)
 
     let value (input:DateOfBirth) = input |> fun (DateOfBirth dateOfBirth) -> dateOfBirth
