@@ -18,9 +18,9 @@ module CompanyCredit =
         | Silver -> 2 * limit |> HasCreditLimit
         | Bronze -> limit |> HasCreditLimit
 
-    let getCreditLimit (creditCheckService:Company -> int) (company:Company) =
+    let getCreditLimit (checkCredit:Company -> int) (company:Company) =
         if company |> requiresCreditCheck then
             company
-            |> creditCheckService
+            |> checkCredit
             |> calculateCreditLimit company 
         else DoesNotHaveCreditLimit
