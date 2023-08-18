@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SharedFunctions.fs" />
     <Compile Include="Company.fs" />
     <Compile Include="CompanyCredit.fs" />
     <Compile Include="Customer.fs" />
